@@ -1,13 +1,13 @@
 Server protocol:
-
-Commands:
-    - `0x01 url`: download the resource at `url`
-
 Syntax:
 ```
 |   Message size (n)   |   Command   |             Arguments           |
 |       2 bytes        |    1 byte   |          (n - 3) bytes          |
 ```
+
+Commands:
+* `x01`: download resource at url
+
 
 Example: download https://9p.io/plan9/img/plan9bunnywhite.jpg
 
