@@ -27,7 +27,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.connect((host, port))
 
-packet = build_command(Command.DOWNLOAD, "https://9p.io/plan9/img/plan9bunnywhite.jpg")
+packet = build_command(Command.download, "https://9p.io/plan9/img/plan9bunnywhite.jpg")
 
 s.send(packet)
 
