@@ -94,9 +94,10 @@ def main():
 
                 log.info(f'wrote file to ./{target["filename"]}')
                 
-
-
                 # TODO: send file back
+                sock.send(body)
+                print('sent file')
+
 
     proxy.run(client_handler)
 

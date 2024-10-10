@@ -31,15 +31,16 @@ packet = build_command(Command.DOWNLOAD, "https://9p.io/plan9/img/plan9bunnywhit
 
 s.send(packet)
 
+response = b''
+
 while True:
-    data = s.recv(1028)
-
-    if data != b'':
-        print(data)
-
-        s.close()
+    chunk = s.recv(1024)
+    response += chunk            
+    if len(chunk) < 1024:
         break
 
+with open('output.jpg', 'wb') as file:
+    file.write(response)
 
-
-# print(packet.hex())
+s.close()
+print('done')
