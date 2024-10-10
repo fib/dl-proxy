@@ -1,6 +1,5 @@
-import sys, socket
-# from enum import Enum
-import logging
+import sys, socket, os
+from urllib.parse import urlparse
 
 from proxy import Command
 
@@ -9,7 +8,7 @@ from proxy import Command
 |   Message size (n)   |   Command   |             Arguments           |
 |       2 bytes        |    1 byte   |          (n - 3) bytes          |
 """
-def build_command(cmd: Command, args: str) -> bytes:
+def build_packet(cmd: Command, args: str) -> bytes:
     length = 2 + 1 + len(args)
 
     length = length.to_bytes(2, byteorder='big')
@@ -27,7 +26,15 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.connect((host, port))
 
-packet = build_command(Command.download, "https://9p.io/plan9/img/plan9bunnywhite.jpg")
+print("Available commands and usage:")
+print("1. Download file from url: `download url`")
+
+command = input("Enter command: ")
+
+cmd, args = command.split(' ')
+url = urlparse(args)
+
+packet = build_packet(Command[cmd], args)
 
 s.send(packet)
 
@@ -39,7 +46,7 @@ while True:
     if len(chunk) < 1024:
         break
 
-with open('output.jpg', 'wb') as file:
+with open(os.path.basename(url.path), 'wb') as file:
     file.write(response)
 
 s.close()
