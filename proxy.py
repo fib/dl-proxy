@@ -117,10 +117,10 @@ class Server:
 
         # save a copy of the returned file on the proxy server
 
-        with open(target["filename"], "wb") as file:
+        with open(f'proxy_{target["filename"]}', "wb") as file:
             file.write(body)
 
-        self.log.info(f'wrote file to ./{target["filename"]}')
+        self.log.info(f'wrote file to ./proxy_{target["filename"]}')
 
         # send the file back to the client
 
