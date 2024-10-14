@@ -13,9 +13,10 @@ class Command(Enum):
 
 
 class Server:
-    """Initializes a Server object."""
 
     def __init__(self, host: str = socket.gethostname(), port: int = 1337) -> None:
+        """Initializes a Server object."""
+
         self.log = logging.getLogger("server")
 
         self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,10 +24,11 @@ class Server:
 
         self.log.info(f"server started at {self.serversocket.getsockname()}")
 
-    """Starts the server socket and assigns a client handler.
-    Default handler is `Server.download`."""
-
     def run(self, client_handler: Callable = None) -> None:
+        """Starts the server socket and assigns a client handler.
+        Default handler is `Server.download`.
+        """
+
         if client_handler == None:
             client_handler = Server.__client_handler
 
@@ -40,16 +42,16 @@ class Server:
             client = Thread(target=client_handler, args=[self, clientsocket])
             client.start()
 
-    """The default client handler.
-    Expects an initial message of size 3 containing the message size and command:
-    |   Message size (n)   |   Command   |
-    |       2 bytes        |    1 byte   |
-    
-    Then, another message of size (n-3) containing the arguments for the command.
-    Commands are defined in the `Command` enum class.
-    """
-
     def __client_handler(self, client: socket.socket) -> None:
+        """The default client handler.
+        Expects an initial message of size 3 containing the message size and command:
+        |   Message size (n)   |   Command   |
+        |       2 bytes        |    1 byte   |
+
+        Then, another message of size (n-3) containing the arguments for the command.
+        Commands are defined in the `Command` enum class.
+        """
+
         data = client.recv(3)
         if data != b"":
             length = int.from_bytes(data[:2], byteorder="big")
@@ -64,12 +66,12 @@ class Server:
                 case Command.download.value:
                     self.__download(client, args)
 
-    """Download command handler: establishes a socket to a remote server and downloads a file,
-    saving a copy on the proxy server and sending the file back to the client.
-    Expects a URL pointing directly to a file as argument.
-    """
-
     def __download(self, client: socket.socket, args: str) -> None:
+        """Download command handler: establishes a socket to a remote server and downloads a file,
+        saving a copy on the proxy server and sending the file back to the client.
+        Expects a URL pointing directly to a file as argument.
+        """
+
         url = urlparse(args)
         target = {
             "host": url.netloc,
@@ -127,7 +129,7 @@ class Server:
         self.log.info(f'sending "{target["filename"]}" to {client.getpeername()}')
         client.send(body)
 
-        self.log.info(f'transmission to {client.getpeername()} done, closing socket')
+        self.log.info(f"transmission to {client.getpeername()} done, closing socket")
         client.close()
 
 
